@@ -8,8 +8,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import seaborn as sns
-
-
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 # Define current user portfolio
 portfolio = {
@@ -31,11 +31,14 @@ market_representation = ['SPY']
 # Define a dictionary for storing weights of portfolios
 portfolio_weights = {}
 
+today = date.today()
+current_date = today.strftime("%Y-%m-%d")
+
 # Define dates for training and backtesting
-training_start_date = '2013-11-27'
-training_end_date = '2018-11-27'
+training_start_date = today - relativedelta(years=10)
+training_end_date = today - relativedelta(years=5)
 backtesting_start_date = training_end_date
-backtesting_end_date = '2023-11-27'
+backtesting_end_date = current_date
 risk_free_rate = 0.04
 
 # Define risk sensitivity for Mean-Variance Optimization
@@ -58,7 +61,7 @@ for ticker in tickers:
 
 market_caps = bl.get_market_caps(tickers)
 index_data = mv.download_stock_data(market_representation, training_start_date, training_end_date)
-index_return = (index_data['Adj Close'].iloc[-1] / index_data['Adj Close'].iloc[0]) - 1
+index_return = (index_data['Close'].iloc[-1] / index_data['Close'].iloc[0]) - 1
 
 # Calculate market returns for each asset
 market_returns = bl.get_market_returns(market_caps, index_return)
@@ -77,7 +80,7 @@ optimized_weights_ml_mv = mv.mean_variance_optimization(tickers, training_start_
 
 # Download market data for backtesting and calculate performance of each asset
 historical_data_backtest = mv.download_stock_data(tickers, backtesting_start_date, backtesting_end_date)
-daily_returns_backtest = historical_data_backtest['Adj Close'].pct_change()
+daily_returns_backtest = historical_data_backtest['Close'].pct_change()
 
 # Calculate the cumulative performance of the machine learning mean variance optimized portfolio
 portfolio_returns_ml_mv = daily_returns_backtest.dot(optimized_weights_ml_mv)
@@ -88,7 +91,7 @@ portfolio_returns_mv = daily_returns_backtest.dot(optimized_weights_mv)
 cumulative_returns_mv = (1 + portfolio_returns_mv).cumprod()
 
 # Download and calculate market index cumulative returns
-market_data = mv.download_stock_data(market_representation, backtesting_start_date, backtesting_end_date)['Adj Close']
+market_data = mv.download_stock_data(market_representation, backtesting_start_date, backtesting_end_date)['Close']
 market_returns = market_data.pct_change()
 cumulative_market_returns = (1 + market_returns).cumprod()
 
@@ -151,10 +154,10 @@ cumulative_returns_mv_percent = (cumulative_returns_mv - 1) * 100
 cumulative_returns_unoptimized_percent = (cumulative_returns_unoptimized - 1) * 100
 cumulative_market_returns_percent = (cumulative_market_returns - 1) * 100
 
-final_returns_ml_mv = cumulative_returns_ml_mv_percent[-1]
-final_returns_mv = cumulative_returns_mv_percent[-1]
-final_returns_unoptimized = cumulative_returns_unoptimized_percent[-1]
-final_returns_market = cumulative_market_returns_percent[-1]
+final_returns_ml_mv = cumulative_returns_ml_mv_percent.iloc[-1]
+final_returns_mv = cumulative_returns_mv_percent.iloc[-1]
+final_returns_unoptimized = cumulative_returns_unoptimized_percent.iloc[-1]
+final_returns_market = cumulative_market_returns_percent.iloc[-1]
 
 # Plot lines representing percentage gain returns
 plt.plot(cumulative_returns_ml_mv_percent, label='Portfolio Optimized with ML and MV', color=colors[0])
@@ -163,19 +166,19 @@ plt.plot(cumulative_market_returns_percent, label='Market Index (SPY)', color=co
 plt.plot(cumulative_returns_unoptimized_percent, label='Original Unoptimized Portfolio', color=colors[3])
 
 # Generate box for ML MV Optimized Portfolio
-stats_text_ml_mv = f"ML & MV Optimized Portfolio:\nSharpe Ratio: {sharpe_ratio_ml_mv:.2f}\nSortino Ratio: {sortino_ratio_ml_mv:.2f}\nInfo Ratio: {info_ratio_ml_mv:.2f}\nReturn: {final_returns_ml_mv:.2f}%"
+stats_text_ml_mv = f"ML & MV Optimized Portfolio:\nSharpe Ratio: {sharpe_ratio_ml_mv:.2f}\nSortino Ratio: {float(sortino_ratio_ml_mv):.2f}\nInfo Ratio: {info_ratio_ml_mv.iloc[0]:.2f}\nReturn: {float(final_returns_ml_mv):.2f}%"
 plt.text(x=0.0655, y=0.77, s=stats_text_ml_mv, transform=plt.gcf().transFigure, fontsize=10, color='white', bbox=dict(boxstyle="round,pad=0.3", edgecolor=colors[0], facecolor='black'))
 
 # Generate box for MV Optimized Portfolio
-stats_text_mv = f"MV Optimized Portfolio:\nSharpe Ratio: {sharpe_ratio_mv:.2f}\nSortino Ratio: {sortino_ratio_mv:.2f}\nInfo Ratio: {info_ratio_mv:.2f}\nReturn: {final_returns_mv:.2f}%"
+stats_text_mv = f"MV Optimized Portfolio:\nSharpe Ratio: {sharpe_ratio_mv:.2f}\nSortino Ratio: {float(sortino_ratio_mv):.2f}\nInfo Ratio: {info_ratio_mv.iloc[0]:.2f}\nReturn: {float(final_returns_mv):.2f}%"
 plt.text(x=0.0655, y=0.67, s=stats_text_mv, transform=plt.gcf().transFigure, fontsize=10, color='white', bbox=dict(boxstyle="round,pad=0.3", edgecolor=colors[1], facecolor='black'))
 
 # Generate box for Unoptimized Portfolio
-stats_text_unoptimized = f"Market ({market_representation[0]}):\nSharpe Ratio: {sharpe_ratio_market:.2f}\nSortino Ratio: {sortino_ratio_market:.2f}\nInfo Ratio: {info_ratio_market:.2f}\nReturn: {final_returns_market:.2f}%"
+stats_text_unoptimized = f"Market ({market_representation[0]}):\nSharpe Ratio: {sharpe_ratio_market.iloc[0]:.2f}\nSortino Ratio: {float(sortino_ratio_market):.2f}\nInfo Ratio: {info_ratio_market.iloc[0]:.2f}\nReturn: {float(final_returns_market):.2f}%"
 plt.text(x=0.0655, y=0.57, s=stats_text_unoptimized, transform=plt.gcf().transFigure, fontsize=10, color='white', bbox=dict(boxstyle="round,pad=0.3", edgecolor=colors[2], facecolor='black'))
 
 # Generate box for market
-stats_text_market = f"Unoptimized Portfolio\nSharpe Ratio: {sharpe_ratio_unoptimized:.2f}\nSortino Ratio: {sortino_ratio_unoptimized:.2f}\nInfo Ratio: {info_ratio_unoptimized:.2f}\nReturn: {final_returns_unoptimized:.2f}%"
+stats_text_market = f"Unoptimized Portfolio\nSharpe Ratio: {sharpe_ratio_unoptimized:.2f}\nSortino Ratio: {float(sortino_ratio_unoptimized):.2f}\nInfo Ratio: {info_ratio_unoptimized.iloc[0]:.2f}\nReturn: {float(final_returns_unoptimized):.2f}%"
 plt.text(x=0.0655, y=0.47, s=stats_text_market, transform=plt.gcf().transFigure, fontsize=10, color='white', bbox=dict(boxstyle="round,pad=0.3", edgecolor=colors[3], facecolor='black'))
 
 

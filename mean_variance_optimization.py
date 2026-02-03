@@ -39,7 +39,15 @@ def mean_variance_optimization(tickers, start_date, end_date, max_volatility, ex
     :param int simulations: number of Monte Carlo simulations
     :return: optimal weights for each ticker
     """
-    data = download_stock_data(tickers, start_date, end_date)['Adj Close']
+    data = download_stock_data(tickers, start_date, end_date)
+    if 'Close' in data.columns:
+        data = data['Close']
+    elif 'Close' in data.columns:
+        data = data['Close']
+    else:
+        print("Columns found in data:", raw_data.columns)
+        raise ValueError("Data does not contain 'Close' or 'Close' columns")
+
     daily_returns = data.pct_change().dropna()
 
     if expected_returns is None:
