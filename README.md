@@ -4,7 +4,7 @@
 This is a **modified and extended version** of the original "Stock Portfolio Machine Learning Optimization" project.
 
 **Original Project** (by Professor / Hunter Gould):  
-https://github.com/kendrickl1675/ML-Portfolio-Optimization  
+https://github.com/Gouldh/ML-Portfolio-Optimization 
 - Focuses on portfolio optimization using Mean-Variance, Machine Learning predictions, and Black-Litterman model.  
 - Original creation date: 11/29/2023  
 - Author: Hunter Gould
@@ -74,7 +74,7 @@ META    11.90%          23.76%              3.16%
 TSLA    10.71%          27.49%              3.23%
 ```
 
-![Example Output](https://github.com/Gouldh/ML-Portfolio-Optimization/blob/main/test_Figure_1.png) 
+![Example Output](https://github.com/jackyka19/Algo-Electornic-Project-ML-Portfolio/blob/main/test_Figure_1.png) 
 
 ## License
 This project is open-sourced under the MIT License. For more information, please refer to the `LICENSE` file.
