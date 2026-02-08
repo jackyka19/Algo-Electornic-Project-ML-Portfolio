@@ -10,7 +10,7 @@ https://github.com/Gouldh/ML-Portfolio-Optimization
 - Author: Hunter Gould
 
 **This Fork/Modified Version** (by Jacky)  
-- Forked and cloned from my friend's repository[](https://github.com/kendrickl1675/ML-Portfolio-Optimization), which was based on the professor's version.  
+- Forked and cloned from my friend's repository (https://github.com/kendrickl1675/ML-Portfolio-Optimization), which was based on the professor's version.  
 - Major changes:  
   - Replaced the original 10-stock portfolio with the **Magnificent Seven** (AAPL, MSFT, NVDA, GOOGL, AMZN, META, TSLA)  
   - Adjusted `max_volatility` from 0.225 to 0.35–0.40 to accommodate higher volatility of tech stocks  
