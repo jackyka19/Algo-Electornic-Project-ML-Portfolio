@@ -12,17 +12,28 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 
 # Define current user portfolio
+# portfolio = {
+#     'AAPL': 1500.0,  # Apple Inc.
+#     'JNJ': 1200.0,   # Johnson & Johnson
+#     'PG': 800.0,     # Procter & Gamble Co.
+#     'JPM': 1300.0,   # JPMorgan Chase & Co.
+#     'XOM': 700.0,    # Exxon Mobil Corporation
+#     'MMM': 600.0,    # 3M Company
+#     'SO': 500.0,     # Southern Company
+#     'VZ': 600.0,     # Verizon Communications Inc.
+#     'NKE': 1000.0,   # NIKE, Inc.
+#     'DD': 800.0      # DuPont de Nemours, Inc.
+# }
+
+# Define current user portfolio - 改成美國七姐妹（Magnificent Seven）
 portfolio = {
     'AAPL': 1500.0,  # Apple Inc.
-    'JNJ': 1200.0,   # Johnson & Johnson
-    'PG': 800.0,     # Procter & Gamble Co.
-    'JPM': 1300.0,   # JPMorgan Chase & Co.
-    'XOM': 700.0,    # Exxon Mobil Corporation
-    'MMM': 600.0,    # 3M Company
-    'SO': 500.0,     # Southern Company
-    'VZ': 600.0,     # Verizon Communications Inc.
-    'NKE': 1000.0,   # NIKE, Inc.
-    'DD': 800.0      # DuPont de Nemours, Inc.
+    'MSFT': 1400.0,  # Microsoft Corporation
+    'NVDA': 1300.0,  # NVIDIA Corporation
+    'GOOGL': 1200.0, # Alphabet Inc. (Google) - Class A
+    'AMZN': 1100.0,  # Amazon.com, Inc.
+    'META': 1000.0,  # Meta Platforms, Inc.
+    'TSLA': 900.0,   # Tesla, Inc.
 }
 
 # Define market representation
@@ -42,7 +53,8 @@ backtesting_end_date = current_date
 risk_free_rate = 0.04
 
 # Define risk sensitivity for Mean-Variance Optimization
-max_volatility = 0.225
+# max_volatility = 0.225
+max_volatility = 0.35
 
 # Define minimum and maximum asset weights for Mean-Variance Optimization
 min_weight = .01
@@ -167,19 +179,19 @@ plt.plot(cumulative_returns_unoptimized_percent, label='Original Unoptimized Por
 
 # Generate box for ML MV Optimized Portfolio
 stats_text_ml_mv = f"ML & MV Optimized Portfolio:\nSharpe Ratio: {sharpe_ratio_ml_mv:.2f}\nSortino Ratio: {float(sortino_ratio_ml_mv):.2f}\nInfo Ratio: {info_ratio_ml_mv.iloc[0]:.2f}\nReturn: {float(final_returns_ml_mv):.2f}%"
-plt.text(x=0.0655, y=0.77, s=stats_text_ml_mv, transform=plt.gcf().transFigure, fontsize=10, color='white', bbox=dict(boxstyle="round,pad=0.3", edgecolor=colors[0], facecolor='black'))
+plt.text(x=0.0655, y=0.845, s=stats_text_ml_mv, transform=plt.gcf().transFigure, fontsize=10, color='white', bbox=dict(boxstyle="round,pad=0.3", edgecolor=colors[0], facecolor='black'))
 
 # Generate box for MV Optimized Portfolio
 stats_text_mv = f"MV Optimized Portfolio:\nSharpe Ratio: {sharpe_ratio_mv:.2f}\nSortino Ratio: {float(sortino_ratio_mv):.2f}\nInfo Ratio: {info_ratio_mv.iloc[0]:.2f}\nReturn: {float(final_returns_mv):.2f}%"
-plt.text(x=0.0655, y=0.67, s=stats_text_mv, transform=plt.gcf().transFigure, fontsize=10, color='white', bbox=dict(boxstyle="round,pad=0.3", edgecolor=colors[1], facecolor='black'))
+plt.text(x=0.0655, y=0.72, s=stats_text_mv, transform=plt.gcf().transFigure, fontsize=10, color='white', bbox=dict(boxstyle="round,pad=0.3", edgecolor=colors[1], facecolor='black'))
 
 # Generate box for Unoptimized Portfolio
 stats_text_unoptimized = f"Market ({market_representation[0]}):\nSharpe Ratio: {sharpe_ratio_market.iloc[0]:.2f}\nSortino Ratio: {float(sortino_ratio_market):.2f}\nInfo Ratio: {info_ratio_market.iloc[0]:.2f}\nReturn: {float(final_returns_market):.2f}%"
-plt.text(x=0.0655, y=0.57, s=stats_text_unoptimized, transform=plt.gcf().transFigure, fontsize=10, color='white', bbox=dict(boxstyle="round,pad=0.3", edgecolor=colors[2], facecolor='black'))
+plt.text(x=0.0655, y=0.595, s=stats_text_unoptimized, transform=plt.gcf().transFigure, fontsize=10, color='white', bbox=dict(boxstyle="round,pad=0.3", edgecolor=colors[2], facecolor='black'))
 
 # Generate box for market
 stats_text_market = f"Unoptimized Portfolio\nSharpe Ratio: {sharpe_ratio_unoptimized:.2f}\nSortino Ratio: {float(sortino_ratio_unoptimized):.2f}\nInfo Ratio: {info_ratio_unoptimized.iloc[0]:.2f}\nReturn: {float(final_returns_unoptimized):.2f}%"
-plt.text(x=0.0655, y=0.47, s=stats_text_market, transform=plt.gcf().transFigure, fontsize=10, color='white', bbox=dict(boxstyle="round,pad=0.3", edgecolor=colors[3], facecolor='black'))
+plt.text(x=0.0655, y=0.470, s=stats_text_market, transform=plt.gcf().transFigure, fontsize=10, color='white', bbox=dict(boxstyle="round,pad=0.3", edgecolor=colors[3], facecolor='black'))
 
 
 plt.title('Comparative Cumulative Returns', color='white')
