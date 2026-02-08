@@ -46,19 +46,25 @@ today = date.today()
 current_date = today.strftime("%Y-%m-%d")
 
 # Define dates for training and backtesting
-training_start_date = today - relativedelta(years=10)
-training_end_date = today - relativedelta(years=5)
+# training_start_date = today - relativedelta(years=10)
+# training_end_date = today - relativedelta(years=5)
+training_start_date = today - relativedelta(years=6)
+training_end_date = today - relativedelta(years=1)   # 留最近 1 年做回測
 backtesting_start_date = training_end_date
 backtesting_end_date = current_date
-risk_free_rate = 0.04
+# risk_free_rate = 0.04
+risk_free_rate = 0.045
 
 # Define risk sensitivity for Mean-Variance Optimization
 # max_volatility = 0.225
-max_volatility = 0.35
+# max_volatility = 0.35
+max_volatility = 0.45
 
 # Define minimum and maximum asset weights for Mean-Variance Optimization
-min_weight = .01
-max_weight = .25
+# min_weight = .01
+min_weight = 0.08
+# max_weight = .25
+max_weight = 0.20
 
 # Perform Mean-Variance Optimization
 tickers, weights = mv.calculate_weights(portfolio)
@@ -69,7 +75,10 @@ investor_views = {}
 view_confidences = {}
 
 for ticker in tickers:
-    investor_views[ticker], view_confidences[ticker] = mls.generate_investor_views(ticker, training_start_date, training_end_date)
+    # investor_views[ticker], view_confidences[ticker] = mls.generate_investor_views(ticker, training_start_date, training_end_date)
+    investor_views[ticker], view_confidences[ticker] = mls.generate_investor_views(
+    ticker, training_start_date, training_end_date, model_type='Random Forest'
+)
 
 market_caps = bl.get_market_caps(tickers)
 index_data = mv.download_stock_data(market_representation, training_start_date, training_end_date)
@@ -79,7 +88,8 @@ index_return = (index_data['Close'].iloc[-1] / index_data['Close'].iloc[0]) - 1
 market_returns = bl.get_market_returns(market_caps, index_return)
 
 historical_data = mv.download_stock_data(tickers, training_start_date, training_end_date)
-predicted_returns = bl.black_litterman_adjustment(market_returns, investor_views, view_confidences, historical_data)
+# predicted_returns = bl.black_litterman_adjustment(market_returns, investor_views, view_confidences, historical_data)
+predicted_returns = bl.black_litterman_adjustment(market_returns, investor_views, view_confidences, historical_data, tau=0.10)
 
 # Map adjusted returns to tickers
 predicted_returns = dict(zip(tickers, predicted_returns))

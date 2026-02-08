@@ -74,7 +74,7 @@ META    11.90%          23.76%              3.16%
 TSLA    10.71%          27.49%              3.23%
 ```
 
-![Example Output](https://github.com/jackyka19/Algo-Electornic-Project-ML-Portfolio/blob/main/test_Figure_1.png) 
+![Example Output](https://github.com/jackyka19/Algo-Electornic-Project-ML-Portfolio/blob/main/test_Figure_2_Feb09_0016.png) 
 
 ## License
 This project is open-sourced under the MIT License. For more information, please refer to the `LICENSE` file.

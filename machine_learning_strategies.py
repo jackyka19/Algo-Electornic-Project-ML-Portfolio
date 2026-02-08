@@ -21,16 +21,38 @@ def download_stock_data(tickers, start_date, end_date):
     return data['Close']
 
 
+# def create_additional_features(stock_data):
+#     """
+#     Creates additional features for the stock data, such as moving averages
+#     :param stock_data: Dataset to create features for
+#     :return: pandas Dataframe with columns for moving averages
+#     """
+#     df = pd.DataFrame(stock_data)
+#     df['5d_rolling_avg'] = stock_data.rolling(window=5).mean()
+#     df['10d_rolling_avg'] = stock_data.rolling(window=10).mean()
+#     # Add more features as needed
+#     return df
+
 def create_additional_features(stock_data):
-    """
-    Creates additional features for the stock data, such as moving averages
-    :param stock_data: Dataset to create features for
-    :return: pandas Dataframe with columns for moving averages
-    """
     df = pd.DataFrame(stock_data)
+    
+    # 原有
     df['5d_rolling_avg'] = stock_data.rolling(window=5).mean()
     df['10d_rolling_avg'] = stock_data.rolling(window=10).mean()
-    # Add more features as needed
+    
+    # 新增建議
+    df['20d_rolling_avg'] = stock_data.rolling(window=20).mean()          # 長期趨勢
+    df['return_1d'] = stock_data.pct_change(1)                            # 前日報酬
+    df['return_5d'] = stock_data.pct_change(5)                            # 5日報酬
+    df['volatility_20d'] = stock_data.pct_change().rolling(20).std() * np.sqrt(252)  # 20日波動
+    
+    # 簡單 RSI（相對強弱指數）
+    delta = stock_data.diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    rs = gain / loss
+    df['RSI_14'] = 100 - (100 / (1 + rs))
+    
     return df
 
 
